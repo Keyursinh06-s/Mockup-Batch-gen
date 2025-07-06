@@ -1,0 +1,31 @@
+{
+  "name": "mockup-batch-gen",
+  "version": "1.0.0",
+  "description": "A powerful tool for generating multiple mockups in batch processing mode",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "build": "webpack --mode production"
+  },
+  "keywords": [
+    "mockup",
+    "batch",
+    "generator",
+    "design",
+    "automation"
+  ],
+  "author": "Keyursinh06-s",
+  "license": "MIT",
+  "dependencies": {
+    "sharp": "^0.32.0",
+    "canvas": "^2.11.0",
+    "commander": "^9.4.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "nodemon": "^2.0.0",
+    "webpack": "^5.74.0"
+  }
+}

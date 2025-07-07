@@ -1,7 +1,7 @@
 const sharp = require('sharp');
 const fs = require('fs').promises;
 const path = require('path');
-
+const ImageValidator = require('./utils/imageValidator');
 class MockupGenerator {
   constructor(options) {
     this.inputDir = options.inputDir;

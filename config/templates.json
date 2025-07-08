@@ -1,0 +1,78 @@
+{
+  "templates": {
+    "default": {
+      "width": 1200,
+      "height": 800,
+      "padding": 50,
+      "background": "#ffffff",
+      "description": "Standard desktop mockup template"
+    },
+    "mobile": {
+      "width": 375,
+      "height": 812,
+      "padding": 20,
+      "background": "#ffffff",
+      "description": "Mobile device mockup template"
+    },
+    "desktop": {
+      "width": 1920,
+      "height": 1080,
+      "padding": 100,
+      "background": "#ffffff",
+      "description": "Large desktop mockup template"
+    },
+    "tablet": {
+      "width": 768,
+      "height": 1024,
+      "padding": 40,
+      "background": "#ffffff",
+      "description": "Tablet device mockup template"
+    },
+    "social-post": {
+      "width": 1080,
+      "height": 1080,
+      "padding": 60,
+      "background": "#f8f9fa",
+      "description": "Square social media post template"
+    },
+    "banner": {
+      "width": 1200,
+      "height": 400,
+      "padding": 30,
+      "background": "#ffffff",
+      "description": "Wide banner mockup template"
+    },
+    "business-card": {
+      "width": 350,
+      "height": 200,
+      "padding": 15,
+      "background": "#ffffff",
+      "description": "Business card mockup template"
+    }
+  },
+  "formats": {
+    "png": {
+      "quality": 90,
+      "compression": "lossless",
+      "transparency": true
+    },
+    "jpg": {
+      "quality": 85,
+      "compression": "lossy",
+      "transparency": false
+    },
+    "webp": {
+      "quality": 80,
+      "compression": "lossy",
+      "transparency": true
+    }
+  },
+  "validation": {
+    "maxFileSize": 52428800,
+    "minDimensions": {
+      "width": 100,
+      "height": 100
+    },
+    "supportedFormats": [".jpg", ".jpeg", ".png", ".webp", ".gif"]
+  }
+}

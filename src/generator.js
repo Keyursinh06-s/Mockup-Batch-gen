@@ -2,7 +2,7 @@ const sharp = require('sharp');
 const fs = require('fs').promises;
 const path = require('path');
 const ImageValidator = require('./utils/imageValidator');
-class MockupGenerator {
+const Logger = require('./utils/logger');
 class MockupGenerator {
   constructor(options) {
     this.inputDir = options.inputDir;
@@ -13,13 +13,13 @@ class MockupGenerator {
     this.validator = new ImageValidator();
     this.processedCount = 0;
     this.errorCount = 0;
+    this.logger = new Logger({ logLevel: 'info' });
+    this.templates = {
+      default: { width: 1200, height: 800, padding: 50 },
+      mobile: { width: 375, height: 812, padding: 20 },
+      desktop: { width: 1920, height: 1080, padding: 100 },
       tablet: { width: 768, height: 1024, padding: 40 }
     };
-  }
-
-  async processAll() {
-    try {
-      await this.ensureOutputDir();
       const files = await this.getInputFiles();
       
       console.log(`📁 Found ${files.length} files to process`);

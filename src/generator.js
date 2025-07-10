@@ -22,50 +22,50 @@ class MockupGenerator {
     };
       const files = await this.getInputFiles();
       
-      console.log(`📁 Found ${files.length} files to process`);
+  async processAll() {
+    const startTime = performance.now();
+    const stats = { total: 0, processed: 0, errors: 0, processingTimes: [] };
+    
+    try {
+      await this.logger.info('Starting batch processing', { template: this.template, format: this.format });
+      await this.ensureOutputDir();
+      const files = await this.getInputFiles();
+      
+      stats.total = files.length;
+      await this.logger.info(`Found ${files.length} files to process`);
       
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        console.log(`🔄 Processing ${i + 1}/${files.length}: ${file}`);
-        await this.processFile(file);
+        const fileStartTime = performance.now();
+        
+        try {
+          await this.logger.debug(`Processing ${i + 1}/${files.length}: ${file}`);
+          await this.processFile(file);
+          
+          const fileEndTime = performance.now();
+          const processingTime = fileEndTime - fileStartTime;
+          stats.processingTimes.push(processingTime);
+          stats.processed++;
+          
+          await this.logger.logPerformance(`Process file: ${file}`, processingTime);
+        } catch (error) {
+          stats.errors++;
+          await this.logger.error(`Failed to process ${file}`, { error: error.message });
+        }
       }
       
+      const endTime = performance.now();
+      const totalTime = endTime - startTime;
+      stats.avgTime = stats.processingTimes.reduce((a, b) => a + b, 0) / stats.processingTimes.length || 0;
+      
+      await this.logger.logBatchStats(stats);
+      await this.logger.info(`Total processing time: ${totalTime.toFixed(2)}ms`);
+      
     } catch (error) {
+      await this.logger.error('Batch processing failed', { error: error.message });
       throw new Error(`Processing failed: ${error.message}`);
     }
   }
-
-  async ensureOutputDir() {
-    try {
-      await fs.access(this.outputDir);
-    } catch {
-      await fs.mkdir(this.outputDir, { recursive: true });
-    }
-  }
-
-  async getInputFiles() {
-    const files = await fs.readdir(this.inputDir);
-    return files.filter(file => 
-      /\.(jpg|jpeg|png|webp|gif)$/i.test(file)
-    );
-  }
-
-  async processFile(filename) {
-    const inputPath = path.join(this.inputDir, filename);
-    const outputPath = path.join(
-      this.outputDir, 
-      `mockup_${path.parse(filename).name}.${this.format}`
-    );
-
-    const template = this.templates[this.template] || this.templates.default;
-    
-    await sharp(inputPath)
-      .resize(
-        template.width - (template.padding * 2),
-        template.height - (template.padding * 2),
-        { fit: 'inside', withoutEnlargement: true }
-      )
-      .extend({
         top: template.padding,
         bottom: template.padding,
         left: template.padding,

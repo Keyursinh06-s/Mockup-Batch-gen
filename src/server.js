@@ -37,6 +37,23 @@ app.post('/api/upload', upload.single('psd'), async (req, res) => {
   }
 });
 
+// Render a flattened PNG preview of the PSD
+app.get('/api/preview/:tempPath', async (req, res) => {
+  try {
+    const tempPath = path.join('uploads', path.basename(req.params.tempPath));
+    if (!fs.existsSync(tempPath)) return res.status(404).send('PSD not found');
+    const psd = await PSD.open(tempPath);
+    psd.parse();
+    const img = psd.image;
+    if (!img) return res.status(400).send('No image in PSD');
+    const pngBuffer = await img.toPng();
+    res.set('Content-Type', 'image/png');
+    res.send(pngBuffer);
+  } catch (err) {
+    res.status(500).send('Error rendering preview: ' + err.message);
+  }
+});
+
 // TODO: Add endpoints for smart object insertion, shape drawing, and PSD export
 
 app.listen(PORT, () => {

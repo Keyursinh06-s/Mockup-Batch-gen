@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PSD Preview & Smart Object Editor</title>
+  <style>
+    body { font-family: sans-serif; margin: 2em; }
+    #tree { white-space: pre; background: #f4f4f4; padding: 1em; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h1>PSD Preview & Smart Object Editor (Experimental)</h1>
+  <form id="uploadForm">
+    <input type="file" name="psd" accept=".psd" required />
+    <button type="submit">Upload PSD</button>
+  </form>
+  <h2>Layer Tree</h2>
+  <div id="tree">No PSD uploaded yet.</div>
+  <script>
+    const form = document.getElementById('uploadForm');
+    const treeDiv = document.getElementById('tree');
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      treeDiv.textContent = 'Uploading...';
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (data.success) {
+        treeDiv.textContent = JSON.stringify(data.tree, null, 2);
+      } else {
+        treeDiv.textContent = 'Error: ' + data.error;
+      }
+    };
+  </script>
+</body>
+</html>

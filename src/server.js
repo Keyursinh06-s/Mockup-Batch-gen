@@ -11,7 +11,13 @@ const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+const webBuildPath = path.join(__dirname, 'web', 'build');
+if (fs.existsSync(webBuildPath)) {
+  app.use(express.static(webBuildPath));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(webBuildPath, 'index.html'));
+  });
+}
 
 // Upload PSD and return basic info
 app.post('/api/upload', upload.single('psd'), async (req, res) => {

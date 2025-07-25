@@ -6,7 +6,7 @@ const path = require('path');
  */
 class ImageValidator {
   constructor() {
-    this.supportedFormats = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+    this.supportedFormats = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.psd'];
     this.maxFileSize = 50 * 1024 * 1024; // 50MB
     this.minDimensions = { width: 100, height: 100 };
   }

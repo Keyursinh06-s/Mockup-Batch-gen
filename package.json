@@ -20,8 +20,9 @@
   "license": "MIT",
   "dependencies": {
     "sharp": "^0.32.0",
-    "canvas": "^2.11.0",
-    "commander": "^9.4.0"
+    "commander": "^9.4.0",
+    "psd": "^3.0.1",
+    "p-limit": "^4.0.0"
   },
   "devDependencies": {
     "jest": "^29.0.0",

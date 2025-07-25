@@ -8,6 +8,8 @@ A powerful tool for generating multiple mockups in batch processing mode.
 - Customizable mockup templates
 - High-resolution output
 - Multiple format support
+- Parallel processing for faster batch jobs (configurable concurrency)
+- Experimental PSD file support (preview, smart object editing coming soon)
 
 ## Installation
 
@@ -20,7 +22,8 @@ npm install
 ## Usage
 
 ```bash
-npm start
+npm start -- -c 8 # Process 8 files in parallel
+npm start -- --psd-preview # Enable PSD preview mode (experimental)
 ```
 
 ## Contributing

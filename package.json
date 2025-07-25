@@ -7,7 +7,8 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "test": "jest",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "psd-server": "node src/server.js"
   },
   "keywords": [
     "mockup",
@@ -19,10 +20,13 @@
   "author": "Keyursinh06-s",
   "license": "MIT",
   "dependencies": {
-    "sharp": "^0.32.0",
     "commander": "^9.4.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "p-limit": "^4.0.0",
     "psd": "^3.0.1",
-    "p-limit": "^4.0.0"
+    "sharp": "^0.32.0"
   },
   "devDependencies": {
     "jest": "^29.0.0",

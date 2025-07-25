@@ -2,7 +2,7 @@ const fs = require('fs').promises;
 const path = require('path');
 
 /**
- * Simple logging utility for the mockup generator
+ * Optimized logging utility for the mockup generator
  */
 class Logger {
   constructor(options = {}) {
@@ -10,6 +10,12 @@ class Logger {
     this.logFile = options.logFile || 'logs/mockup-generator.log';
     this.enableConsole = options.enableConsole !== false;
     this.enableFile = options.enableFile !== false;
+    
+    // Performance optimizations
+    this.batchSize = options.batchSize || 50;
+    this.flushInterval = options.flushInterval || 5000; // 5 seconds
+    this.logBuffer = [];
+    this.flushTimer = null;
     
     this.levels = {
       error: 0,
@@ -27,6 +33,7 @@ class Logger {
     };
     
     this.ensureLogDirectory();
+    this.startFlushTimer();
   }
 
   async ensureLogDirectory() {
@@ -35,6 +42,28 @@ class Logger {
       await fs.mkdir(logDir, { recursive: true });
     } catch (error) {
       // Directory might already exist
+    }
+  }
+
+  startFlushTimer() {
+    if (this.flushTimer) {
+      clearInterval(this.flushTimer);
+    }
+    
+    this.flushTimer = setInterval(() => {
+      this.flushLogs();
+    }, this.flushInterval);
+  }
+
+  async flushLogs() {
+    if (this.logBuffer.length === 0) return;
+    
+    try {
+      const logsToWrite = this.logBuffer.splice(0);
+      const logContent = logsToWrite.join('\n') + '\n';
+      await fs.appendFile(this.logFile, logContent);
+    } catch (error) {
+      console.error('Failed to flush logs to file:', error.message);
     }
   }
 
@@ -59,12 +88,13 @@ class Logger {
       console.log(`${colorCode}${formattedMessage}${this.colors.reset}`);
     }
     
-    // File output
+    // Buffered file output for better performance
     if (this.enableFile) {
-      try {
-        await fs.appendFile(this.logFile, formattedMessage + '\n');
-      } catch (error) {
-        console.error('Failed to write to log file:', error.message);
+      this.logBuffer.push(formattedMessage);
+      
+      // Force flush if buffer is full or for error messages
+      if (this.logBuffer.length >= this.batchSize || level === 'error') {
+        await this.flushLogs();
       }
     }
   }
@@ -85,7 +115,7 @@ class Logger {
     return this.log('debug', message, meta);
   }
 
-  // Performance logging
+  // Performance logging with caching
   async logPerformance(operation, duration, meta = {}) {
     const performanceData = {
       operation,
@@ -95,8 +125,8 @@ class Logger {
     
     if (duration > 1000) {
       await this.warn('Slow operation detected', performanceData);
-    } else {
-      await this.info('Operation completed', performanceData);
+    } else if (this.shouldLog('debug')) {
+      await this.debug('Operation completed', performanceData);
     }
   }
 
@@ -111,14 +141,25 @@ class Logger {
     });
   }
 
-  // Clear log file
+  // Clear log file and buffer
   async clearLogs() {
     try {
+      // Flush any pending logs first
+      await this.flushLogs();
+      
       await fs.writeFile(this.logFile, '');
       await this.info('Log file cleared');
     } catch (error) {
       console.error('Failed to clear log file:', error.message);
     }
+  }
+
+  // Cleanup method for graceful shutdown
+  async cleanup() {
+    if (this.flushTimer) {
+      clearInterval(this.flushTimer);
+    }
+    await this.flushLogs();
   }
 }
 
